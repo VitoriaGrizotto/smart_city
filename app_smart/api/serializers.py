@@ -40,3 +40,6 @@ class ContadorDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContadorData
         fields = '__all__'    
+
+
+    

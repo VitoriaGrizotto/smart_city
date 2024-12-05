@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from .models import Sensor
 from rest_framework.parsers import MultiPartParser, FormParser
-from .forms import CSVUploadForm
+from .forms import CSVUploadForm, CSVUploadTemp
 from django import forms
 from app_smart.models import Sensor, LuminosidadeData, TemperaturaData, UmidadeData, ContadorData
 from django.views.generic import TemplateView
@@ -184,3 +184,45 @@ def process_csv_upload(request):
         form = CSVUploadForm()
 
     return render(request, 'app_smart/upload.html', {'form': form})
+
+
+def load_temperature_data(request):
+    if request.method == 'POST':
+        form = CSVUploadTemp(request.POST, request.FILES)
+        
+        if form.is_valid():
+            csv_file = request.FILES['file']
+            
+            # Verifica se o arquivo tem a extensão correta
+            if not csv_file.name.endswith('.csv'):
+                form.add_error('file', 'Este não é um arquivo CSV válido.')
+            else:
+                # Processa o arquivo CSV
+                file_data = csv_file.read().decode('ISO-8859-1').splitlines()
+                reader = csv.DictReader(file_data, delimiter=',')  # Altere para ',' se necessário
+                
+                for row in reader:
+                    try:
+                        sensor_id = int(row['sensor_id'])             
+                        valor = float(row['valor'])
+                        timestamp = parser.parse(row['timestamp'])  
+
+                        try:
+                            sensor_instance = Sensor.objects.get(id=sensor_id)
+                        except Sensor.DoesNotExist:
+                            print(f"Sensor com ID {sensor_id} não encontrado. Pulando a linha: {row}")
+                            continue  # Pule para a próxima iteração se o sensor não existir
+                        
+                        TemperaturaData.objects.create(
+                            sensor=sensor_instance,  # Atribuindo a instância do Sensor
+                            valor=valor, 
+                            timestamp=timestamp
+                        )    
+                    except KeyError as e:
+                        print(f"Chave não encontrada: {e} na linha: {row}")  # Exibe o erro e a linha problemática
+                
+
+    else:
+        form = CSVUploadTemp()
+
+    return render(request, 'app_smart/upload_csv.html', {'form': form})

@@ -5,3 +5,4 @@ class CSVUploadForm(forms.Form):
 
 class CSVUploadTemp(forms.Form):
     file = forms.FileField(label="Selecione um arquivo CSV de Temperatura")
+

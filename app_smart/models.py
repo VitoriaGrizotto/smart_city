@@ -29,7 +29,7 @@ class Sensor(models.Model):
 class TemperaturaData(models.Model):
    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
    valor = models.FloatField() # Valor da temperatura em graus Celsius
-   # timestamp = models.DateTimeField(auto_now_add=True) # Momento da leitura
+   timestamp = models.DateTimeField(auto_now_add=True) # Momento da leitura
    timestamp = models.DateTimeField()
    def __str__(self):
       return f"Temperatura: {self.valor} °C - {self.timestamp}"

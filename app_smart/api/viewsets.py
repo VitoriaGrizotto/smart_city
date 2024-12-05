@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response 
 from rest_framework import viewsets
 from app_smart.api import serializers
@@ -16,7 +17,7 @@ import csv
 class CreateUser(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
@@ -51,3 +52,7 @@ class ContadorDataViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ContadorDataSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
+class TemperatureDataList(generics.ListAPIView):
+    queryset = TemperaturaData.objects.all()
+    serializer_class = TemperaturaDataSerializer

@@ -41,6 +41,12 @@ REST_FRAMEWORK ={
  'rest_framework.authentication.SessionAuthentication',
  ),
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
  
 SIMPLE_JWT = {
  'ACCESS_TOKEN_LIFETIME': timedelta(minutes=80),

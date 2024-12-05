@@ -1,6 +1,7 @@
 from django.urls import path, include
 from . import views
-from .views import RegisterView, LoginView
+from .api.viewsets import TemperatureDataList
+from .views import RegisterView, LoginView, load_temperature_data
 from app_smart.api.viewsets import CreateUser, SensorViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.routers import DefaultRouter
@@ -23,6 +24,8 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('process-upload/', process_csv_upload, name='process-upload'),
      path('api/register', RegisterView.as_view(), name='register'),
-    path('api/login', LoginView.as_view(), name='login')
-    # path('api/upload/temperatura/', TemperaturaDataViewSet.as_view({'post': 'upload'}), name='upload_temperatura'),
+    path('api/login', LoginView.as_view(), name='login'),
+    path('api/temp', load_temperature_data, name='temperatura_data'),
+    path('api/temperatura', TemperatureDataList.as_view(), name='temperatura'),
 ]
+    # path('api/upload/temperatura/', TemperaturaDataViewSet.as_view({'post': 'upload'}), name='upload_temperatura'),
